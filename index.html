@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El temps</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        var openWeatherAppId = 'e35fe686c4abbcbd1e1722549598b25e',
+            openWeatherUrl = 'http://api.openweathermap.org/data/2.5/forecast'
+
+        var prepararDades = function (unitats) {
+            var nomCiutat = $('#nom-ciutat').val()
+            if (nomCiutat && nomCiutat != '') {
+                nomCiutat = nomCiutat.trim()
+                getData(openWeatherUrl, nomCiutat, openWeatherAppId, unitats)
+            }
+            else {
+                alert('Si us plau entra el nom de la ciutat')
+            }
+        }
+
+        $(document).ready(function () {
+            $('.btn-metric').click(function () {
+                prepararDades('metric')
+            })
+            $('.btn-imperial').click(function () {
+                prepararDades('imperial')
+            })
+        })
+
+        function getData(url, nomCiutat, appId, unitats) {
+            var request = $.ajax({
+                url: url,
+                dataType: 'jsonp',
+                data: {
+                    q: nomCiutat,
+                    appid: appId,
+                    units: unitats
+                },
+                jsonpCallback: 'cercarDades',
+                type: 'GET'
+            }).fail(function (error) {
+                console.error(error)
+                alert('Error enviant la peticio')
+            })
+        }
+
+        function cercarDades(previsio) {
+            console.log(previsio)
+            var html = '',
+                nomCiutat = previsio.city.name,
+                country = previsio.city.country
+
+            html += '<div class ="container mt-5">'
+                + '<h3> '
+                + '<div class="alert alert-dark" role="alert"> Previsió de temps per a ' + nomCiutat + ', ' + country + '</div>'
+                + '</h3>'
+                + '</div>'
+
+
+
+
+            previsio.list.forEach(function (previsioEntry, index, list) {
+                var icon = previsioEntry.weather[0].icon;
+                var iconUrl = 'http://openweathermap.org/img/wn/' + icon + '@2x.png';
+                html += '<p>'
+                    + '<div class ="tabla container">'
+                    + '<div class="row">'
+                    + '<div class="col">'
+                    + '<div class="card mt-3">'
+                    + '<div class="card-body">'
+                    + '<h5 class="card-title">'
+                    + 'Data: ' + previsioEntry.dt_txt + '<p> '
+                    + 'Temperatura: ' + previsioEntry.main.temp + '</h5>'
+                    + '<div class="icono">'
+                    + '<img src=' + iconUrl + '></img>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+            })
+            $('#log').html(html)
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand d-inline-block">
+                    Aplicació del temps
+                </a>
+            </div>
+        </nav>
+        <div class="cover portada d-flex justify-content-center align-items-center flex-column" title="paisaje">
+
+            <h2> Consultar el temps </h2>
+            <p>Entra el nom d'una ciutat per consultar la previsió del temps</p>
+
+            <div class="btn-group-vertical">
+                <div>
+                    <input class="form-control mb-4" type="text" placeholder="Entra el nom de la ciutat" id="nom-ciutat"
+                        value="" />
+
+                    <input type="button" class="btn-warning btn btn-metric w-100" value="Previsió en graus celsius" />
+                    <input type="button" class="btn-dark btn btn-imperial w-100" value="Previsió amb fahrenheit" />
+                    <div class="span3">
+                        <p id="info"></p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <section>
+
+            <div class="span6 offset1">
+                <div id="log"></div>
+            </div>
+            </div>
+            <div class="row">
+
+        </section>
+    </header>
+    </div>
+</body>
+
+</html>

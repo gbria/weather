@@ -1,0 +1,25 @@
+body {
+    margin: 0em;
+    font-family: 'Roboto', sans-serif;
+    background-color: whitesmoke;
+}
+
+.cover {
+    height: 400px;
+    background-image: url(../img/paisaje.jpg);
+    color: whitesmoke;
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    background-blend-mode: darken;
+}
+
+.tabla {
+    background-size: cover;
+    text-align: center;
+}
+
+.icono {
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+}
